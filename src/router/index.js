@@ -32,14 +32,14 @@ const routes = [{
     component: Overlay
   },
   {
-    path: '/Measure',
-    name: '空间测量',
-    component: Measure
-  },
-  {
     path: '/Plotting',
     name: '标绘',
     component: Plotting
+  },
+  {
+    path: '/Measure',
+    name: '空间测量',
+    component: Measure
   },
   {
     path: '/Heatmap',

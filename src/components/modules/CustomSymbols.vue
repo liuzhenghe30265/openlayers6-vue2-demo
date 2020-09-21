@@ -3,7 +3,7 @@
  * @Email: 15901450207@163.com
  * @Date: 2020-08-04 11:43:41
  * @LastEditors: liuzhenghe
- * @LastEditTime: 2020-08-30 09:55:02
+ * @LastEditTime: 2020-09-21 11:16:22
  * @Descripttion: 自定义矢量标注
 -->
 
@@ -275,6 +275,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-</style>

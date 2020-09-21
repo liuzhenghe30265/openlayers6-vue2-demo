@@ -3,7 +3,7 @@
  * @Email: 15901450207@163.com
  * @Date: 2020-06-07 01:44:53
  * @LastEditors: liuzhenghe
- * @LastEditTime: 2020-08-30 17:50:55
+ * @LastEditTime: 2020-09-21 11:27:04
  * @Descripttion: 热力图
 -->
 
@@ -160,6 +160,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-</style>

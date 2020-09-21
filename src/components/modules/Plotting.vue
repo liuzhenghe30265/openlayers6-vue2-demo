@@ -3,7 +3,7 @@
  * @Email: 15901450207@163.com
  * @Date: 2020-06-07 10:31:25
  * @LastEditors: liuzhenghe
- * @LastEditTime: 2020-09-20 17:01:35
+ * @LastEditTime: 2020-09-21 18:18:58
  * @Descripttion: 标绘
 -->
 
@@ -304,6 +304,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-</style>
