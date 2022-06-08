@@ -1,16 +1,7 @@
-<!--
- * @Author: liuzhenghe
- * @Email: 15901450207@163.com
- * @Date: 2020-08-04 11:43:41
- * @LastEditors: liuzhenghe
- * @LastEditTime: 2020-09-21 10:52:50
- * @Descripttion: 地图初始化
--->
-
 <template>
-  <div id="map-container"
-       style="width:100%;height:100%;">
-  </div>
+  <div
+    id="map-container"
+    style="width:100%;height:100%;" />
 </template>
 <script>
 import 'ol/ol.css'
@@ -23,19 +14,19 @@ import { ZoomToExtent, defaults as defaultControls } from 'ol/control'
 
 export default {
   name: '',
-  data() {
+  data () {
     return {
-      map: null,
+      map: null
     }
   },
-  mounted() {
+  mounted () {
     this.initMap()
   },
   methods: {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun() {
+    singleClickFun () {
       this.map.on('singleclick', event => {
         console.log(event)
         console.log(event.coordinate[0], event.coordinate[1])
@@ -45,17 +36,17 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap() {
-      let view = new View({
+    initMap () {
+      const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
-        zoom: 12,
+        zoom: 12
       })
-      let layer = new TileLayer({
+      const layer = new TileLayer({
         source: new OSM(),
         visible: true,
         zIndex: 9,
-        name: 'OSM',
+        name: 'OSM'
       })
       this.map = new Map({
         layers: [],
@@ -67,15 +58,15 @@ export default {
               116.22979869019117,
               39.78578351593684,
               116.56048958074179,
-              40.077314154870024,
-            ],
-          }),
-        ]),
+              40.077314154870024
+            ]
+          })
+        ])
       })
       this.map.addLayer(layer)
       this.singleClickFun()
-    },
-  },
+    }
+  }
 }
 </script>
 

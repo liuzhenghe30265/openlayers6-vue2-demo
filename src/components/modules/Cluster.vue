@@ -1,21 +1,13 @@
-<!--
- * @Author: liuzhenghe
- * @Email: 15901450207@163.com
- * @Date: 2020-06-07 02:02:51
- * @LastEditors: liuzhenghe
- * @LastEditTime: 2020-09-21 11:27:57
- * @Descripttion: 聚合
--->
-
 <template>
-  <div id="map-container"
-       style="width:100%;height:100%;">
+  <div
+    id="map-container"
+    style="width:100%;height:100%;">
     <div
-         style="position:absolute;right:50px;top:50px;z-index:999;">
+      style="position:absolute;right:50px;top:50px;z-index:999;">
       <button
-              @click="addClusterLayer(clusterData)">聚合</button>
+        @click="addClusterLayer(clusterData)">聚合</button>
       <button
-              @click="removeLayerByName('聚合图层')">清除</button>
+        @click="removeLayerByName('聚合图层')">清除</button>
     </div>
   </div>
 </template>
@@ -40,47 +32,47 @@ import { Cluster } from 'ol/source'
 
 export default {
   name: '',
-  data() {
+  data () {
     return {
       // 聚合数据
       clusterData: [
         {
           name: '1',
-          coordinates: [116.40182752977934, 39.92476619935702],
+          coordinates: [116.40182752977934, 39.92476619935702]
         },
         {
           name: '2',
-          coordinates: [116.42764915596571, 39.949683921105375],
+          coordinates: [116.42764915596571, 39.949683921105375]
         },
         {
           name: '3',
-          coordinates: [116.48107607733336, 39.88376327014636],
+          coordinates: [116.48107607733336, 39.88376327014636]
         },
         {
           name: '4',
-          coordinates: [116.43154238235083, 39.94546346522044],
+          coordinates: [116.43154238235083, 39.94546346522044]
         },
         {
           name: '5',
-          coordinates: [116.40311901342001, 39.92316223836612],
+          coordinates: [116.40311901342001, 39.92316223836612]
         },
         {
           name: '6',
-          coordinates: [116.40436524149327, 39.92102890235143],
-        },
+          coordinates: [116.40436524149327, 39.92102890235143]
+        }
       ],
-      map: null,
+      map: null
     }
   },
-  mounted() {
+  mounted () {
     this.initMap()
   },
   methods: {
     /**
      * @name: 鼠标悬浮改变聚合图标样式
      */
-    pointerMove() {
-      let _this = this
+    pointerMove () {
+      const _this = this
       _this.map.on('pointermove', evt => {
         _this.map.getTargetElement().style.cursor = _this.map.hasFeatureAtPixel(
           evt.pixel
@@ -93,9 +85,9 @@ export default {
     /**
      * @name: 设置聚合图标样式
      */
-    setClusterStyle() {
+    setClusterStyle () {
       return feature => {
-        let size = feature.get('features').length
+        const size = feature.get('features').length
         let color = ''
         if (size === 1) {
           color = 'green'
@@ -104,26 +96,26 @@ export default {
         } else {
           color = 'red'
         }
-        let style = new OlStyleStyle({
+        const style = new OlStyleStyle({
           image: new OlStyleCircle({
             radius: 15,
             stroke: new OlStyleStroke({
-              color: '#fff',
+              color: '#fff'
             }),
             fill: new OlStyleFill({
-              color: color,
-            }),
+              color: color
+            })
           }),
           text: new OlStyleText({
             text: size.toString(),
             fill: new OlStyleFill({
-              color: '#000',
+              color: '#000'
             }),
             stroke: new OlStyleStroke({
               color: '#fff',
-              width: 5,
-            }),
-          }),
+              width: 5
+            })
+          })
         })
         return style
       }
@@ -134,24 +126,24 @@ export default {
      * @param {data} Array 聚合数据
      * @return {type}
      */
-    addClusterLayer(data) {
-      let _this = this
-      let source = new OlSourceVector()
-      let clusterSource = new Cluster({
+    addClusterLayer (data) {
+      const _this = this
+      const source = new OlSourceVector()
+      const clusterSource = new Cluster({
         distance: parseInt(20, 10),
-        source: source,
+        source: source
       })
-      let layer = new OlLayerVector({
+      const layer = new OlLayerVector({
         source: clusterSource,
-        style: _this.setClusterStyle.call(_this),
+        style: this.setClusterStyle.call(_this),
         name: '聚合图层',
-        zIndex: 9,
+        zIndex: 9
       })
       _this.map.addLayer(layer)
       for (let i = 0; i < data.length; i++) {
-        let coordinates = data[i].coordinates
-        let feature = new OlFeature({
-          geometry: new OlGeomPoint(coordinates),
+        const coordinates = data[i].coordinates
+        const feature = new OlFeature({
+          geometry: new OlGeomPoint(coordinates)
         })
         feature.set('name', data[i].name)
         feature.set('value', data[i].value)
@@ -166,9 +158,9 @@ export default {
      * @name: 根据图层名移除图层
      * @param {layername} 图层名称
      */
-    removeLayerByName(layerName) {
+    removeLayerByName (layerName) {
       this.getLayerByName(layerName)
-      let layer = this.getLayerByName(layerName)
+      const layer = this.getLayerByName(layerName)
       layer.forEach(item => {
         this.map.removeLayer(item)
       })
@@ -178,9 +170,9 @@ export default {
      * @name: 根据图层名获取图层
      * @param {layerName} 图层名称
      */
-    getLayerByName(layerName) {
-      let allLayers = this.getAllLayers()
-      let layer = allLayers.filter(item => {
+    getLayerByName (layerName) {
+      const allLayers = this.getAllLayers()
+      const layer = allLayers.filter(item => {
         return item.get('name') === layerName
       })
       return layer
@@ -189,15 +181,15 @@ export default {
     /**
      * @name: 获取所有图层
      */
-    getAllLayers() {
-      let layers = this.map.getLayers().getArray()
+    getAllLayers () {
+      const layers = this.map.getLayers().getArray()
       return layers
     },
 
     /**
      * @name: 地图单击事件
      */
-    singleClickFun() {
+    singleClickFun () {
       this.map.on('singleclick', event => {
         console.log(event)
       })
@@ -206,27 +198,27 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap() {
-      let view = new View({
+    initMap () {
+      const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
-        zoom: 12,
+        zoom: 12
       })
-      let layer = new TileLayer({
+      const layer = new TileLayer({
         source: new OSM(),
         visible: true,
         zIndex: 1,
-        name: 'OSM',
+        name: 'OSM'
       })
       this.map = new Map({
         layers: [],
         target: 'map-container',
         view: view,
-        controls: defaultControls().extend([new ZoomSlider()]),
+        controls: defaultControls().extend([new ZoomSlider()])
       })
       this.map.addLayer(layer)
       this.singleClickFun()
-    },
-  },
+    }
+  }
 }
 </script>

@@ -1,54 +1,45 @@
-<!--
- * @Author: liuzhenghe
- * @Email: 15901450207@163.com
- * @Date: 2020-08-04 11:43:41
- * @LastEditors: liuzhenghe
- * @LastEditTime: 2020-09-21 11:10:43
- * @Descripttion: 加载 GeoServer 发布的 wms 服务
--->
-
 <template>
-  <div id="map-container"
-       style="width:100%;height:100%;">
-  </div>
+  <div
+    id="map-container"
+    style="width:100%;height:100%;" />
 </template>
 <script>
 import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import TileWMS from "ol/source/TileWMS"
+import TileWMS from 'ol/source/TileWMS'
 import OSM from 'ol/source/OSM'
 import { defaults as defaultControls } from 'ol/control'
 import ZoomSlider from 'ol/control/ZoomSlider'
 
 export default {
   name: 'GeoServer',
-  data() {
+  data () {
     return {
-      map: null,
+      map: null
     }
   },
-  mounted() {
+  mounted () {
     this.initMap()
   },
   methods: {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun() {
+    singleClickFun () {
       this.map.on('singleclick', event => {
         console.log(event)
         // GetFeatureInfo
-        let view = this.map.getView()
-        let wmsSource = new TileWMS({
-          url: "https://ahocevar.com/geoserver/wms",
+        const view = this.map.getView()
+        const wmsSource = new TileWMS({
+          url: 'https://ahocevar.com/geoserver/wms',
           params: { 'LAYERS': 'topp:states', 'TILED': true },
-          serverType: "geoserver",
-          transition: 0,
+          serverType: 'geoserver',
+          transition: 0
         })
-        let viewResolution = (view.getResolution())
-        let url = wmsSource.getFeatureInfoUrl(
+        const viewResolution = (view.getResolution())
+        const url = wmsSource.getFeatureInfoUrl(
           event.coordinate, viewResolution, 'EPSG:4326',
           { 'INFO_FORMAT': 'application/json' })
         if (url) {
@@ -64,33 +55,33 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap() {
-      let view = new View({
+    initMap () {
+      const view = new View({
         projection: 'EPSG:4326',
         center: [-101.44058, 39.816105],
-        zoom: 5,
+        zoom: 5
       })
-      let layer = new TileLayer({
+      const layer = new TileLayer({
         source: new OSM(),
         visible: true,
         zIndex: 1,
-        name: 'OSM',
+        name: 'OSM'
       })
       this.map = new Map({
         layers: [],
         target: 'map-container',
         view: view,
-        controls: defaultControls().extend([new ZoomSlider()]),
+        controls: defaultControls().extend([new ZoomSlider()])
       })
       this.map.addLayer(layer)
 
       // 加载 GeoServer 发布的 wms 服务
-      let wmsLayer = new TileLayer({
+      const wmsLayer = new TileLayer({
         source: new TileWMS({
           url: 'https://ahocevar.com/geoserver/wms', // geoserver 服务地址
           params: { 'LAYERS': 'topp:states', 'TILED': true },
-          serverType: "geoserver",
-          transition: 0,
+          serverType: 'geoserver',
+          transition: 0
         }),
         visible: true,
         zIndex: 9,
@@ -99,7 +90,7 @@ export default {
       this.map.addLayer(wmsLayer)
 
       this.singleClickFun()
-    },
-  },
+    }
+  }
 }
 </script>

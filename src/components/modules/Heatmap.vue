@@ -1,21 +1,13 @@
-<!--
- * @Author: liuzhenghe
- * @Email: 15901450207@163.com
- * @Date: 2020-06-07 01:44:53
- * @LastEditors: liuzhenghe
- * @LastEditTime: 2020-09-21 11:27:04
- * @Descripttion: 热力图
--->
-
 <template>
-  <div id="map-container"
-       style="width:100%;height:100%;">
+  <div
+    id="map-container"
+    style="width:100%;height:100%;">
     <div
-         style="position:absolute;right:50px;top:50px;z-index:999;">
+      style="position:absolute;right:50px;top:50px;z-index:999;">
       <button
-              @click="addHeatmapFun(heatmapData)">热力图</button>
+        @click="addHeatmapFun(heatmapData)">热力图</button>
       <button
-              @click="removeLayerByName('热力图')">清除</button>
+        @click="removeLayerByName('热力图')">清除</button>
     </div>
   </div>
 </template>
@@ -33,7 +25,7 @@ import GeoJSON from 'ol/format/GeoJSON'
 
 export default {
   name: '',
-  data() {
+  data () {
     return {
       // 热力图数据
       heatmapData: {
@@ -42,34 +34,34 @@ export default {
           {
             type: 'Point',
             coordinates: [116.40182752977934, 39.92476619935702],
-            count: 100,
+            count: 100
           },
           {
             type: 'Point',
             coordinates: [116.42764915596571, 39.949683921105375],
-            count: 200,
+            count: 200
           },
           {
             type: 'Point',
             coordinates: [116.48107607733336, 39.88376327014636],
-            count: 300,
+            count: 300
           },
           {
             type: 'Point',
             coordinates: [116.43154238235083, 39.94546346522044],
-            count: 400,
+            count: 400
           },
           {
             type: 'Point',
             coordinates: [116.40311901342001, 39.92316223836612],
-            count: 500,
-          },
-        ],
+            count: 500
+          }
+        ]
       },
-      map: null,
+      map: null
     }
   },
-  mounted() {
+  mounted () {
     this.initMap()
     // this.addHeatmapFun(this.heatmapData)
   },
@@ -78,16 +70,16 @@ export default {
      * @name: 热力图
      * @param {data} Object
      */
-    addHeatmapFun(data) {
-      let heatMapVector = new OlHeatmapLayer({
+    addHeatmapFun (data) {
+      const heatMapVector = new OlHeatmapLayer({
         source: new OlSourceVector({
-          features: new GeoJSON().readFeatures(data),
+          features: new GeoJSON().readFeatures(data)
         }),
         zIndex: 9,
         opacity: 0.5,
         name: '热力图',
         blur: 20, // 模糊尺寸
-        radius: 20, // 热点半径
+        radius: 20 // 热点半径
       })
       this.map.addLayer(heatMapVector)
     },
@@ -96,9 +88,9 @@ export default {
      * @name: 根据图层名移除图层
      * @param {layername} 图层名称
      */
-    removeLayerByName(layerName) {
+    removeLayerByName (layerName) {
       this.getLayerByName(layerName)
-      let layer = this.getLayerByName(layerName)
+      const layer = this.getLayerByName(layerName)
       layer.forEach(item => {
         this.map.removeLayer(item)
       })
@@ -108,9 +100,9 @@ export default {
      * @name: 根据图层名获取图层
      * @param {layerName} 图层名称
      */
-    getLayerByName(layerName) {
-      let allLayers = this.getAllLayers()
-      let layer = allLayers.filter(item => {
+    getLayerByName (layerName) {
+      const allLayers = this.getAllLayers()
+      const layer = allLayers.filter(item => {
         return item.get('name') === layerName
       })
       return layer
@@ -119,15 +111,15 @@ export default {
     /**
      * @name: 获取所有图层
      */
-    getAllLayers() {
-      let layers = this.map.getLayers().getArray()
+    getAllLayers () {
+      const layers = this.map.getLayers().getArray()
       return layers
     },
 
     /**
      * @name: 地图单击事件
      */
-    singleClickFun() {
+    singleClickFun () {
       this.map.on('singleclick', event => {
         console.log(event)
       })
@@ -136,27 +128,27 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap() {
-      let view = new View({
+    initMap () {
+      const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
-        zoom: 12,
+        zoom: 12
       })
-      let layer = new TileLayer({
+      const layer = new TileLayer({
         source: new OSM(),
         visible: true,
         zIndex: 1,
-        name: 'OSM',
+        name: 'OSM'
       })
       this.map = new Map({
         layers: [],
         target: 'map-container',
         view: view,
-        controls: defaultControls().extend([new ZoomSlider()]),
+        controls: defaultControls().extend([new ZoomSlider()])
       })
       this.map.addLayer(layer)
       this.singleClickFun()
-    },
-  },
+    }
+  }
 }
 </script>

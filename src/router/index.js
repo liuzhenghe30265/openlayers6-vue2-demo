@@ -12,45 +12,45 @@ import Cluster from '@/components/modules/Cluster'
 Vue.use(VueRouter)
 
 const routes = [{
-    path: '/',
-    name: '初始化',
-    component: InitMap
-  },
-  {
-    path: '/GeoServer',
-    name: 'GeoServer',
-    component: GeoServer
-  },
-  {
-    path: '/CustomSymbols',
-    name: '自定义矢量标注',
-    component: CustomSymbols
-  },
-  {
-    path: '/Overlay',
-    name: '覆盖物图层',
-    component: Overlay
-  },
-  {
-    path: '/Plotting',
-    name: '标绘',
-    component: Plotting
-  },
-  {
-    path: '/Measure',
-    name: '空间测量',
-    component: Measure
-  },
-  {
-    path: '/Heatmap',
-    name: '热力图',
-    component: Heatmap
-  },
-  {
-    path: '/Cluster',
-    name: '聚合',
-    component: Cluster
-  },
+  path: '/',
+  name: '初始化',
+  component: InitMap
+},
+{
+  path: '/GeoServer',
+  name: 'GeoServer',
+  component: GeoServer
+},
+{
+  path: '/CustomSymbols',
+  name: '自定义矢量标注',
+  component: CustomSymbols
+},
+{
+  path: '/Overlay',
+  name: '覆盖物图层',
+  component: Overlay
+},
+{
+  path: '/Plotting',
+  name: '标绘',
+  component: Plotting
+},
+{
+  path: '/Measure',
+  name: '空间测量',
+  component: Measure
+},
+{
+  path: '/Heatmap',
+  name: '热力图',
+  component: Heatmap
+},
+{
+  path: '/Cluster',
+  name: '聚合',
+  component: Cluster
+}
 ]
 
 const router = new VueRouter({
