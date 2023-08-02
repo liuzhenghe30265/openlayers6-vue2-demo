@@ -1,32 +1,31 @@
 <template>
-  <div
-    id="map-container"
-    style="width:100%;height:100%;" />
+  <div id="map-container" style="width:100%;height:100%;" />
 </template>
 <script>
 import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import OSM from 'ol/source/OSM'
+// import OSM from 'ol/source/OSM'
+import XYZ from 'ol/source/XYZ'
 import { ZoomToExtent, defaults as defaultControls } from 'ol/control'
 // import Extent from 'ol/interaction/Extent'
 
 export default {
   name: '',
-  data () {
+  data() {
     return {
       map: null
     }
   },
-  mounted () {
+  mounted() {
     this.initMap()
   },
   methods: {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun () {
+    singleClickFun() {
       this.map.on('singleclick', event => {
         console.log(event)
         console.log(event.coordinate[0], event.coordinate[1])
@@ -36,17 +35,22 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap () {
+    initMap() {
       const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
         zoom: 12
       })
+      // const layer = new TileLayer({
+      //   source: new OSM(),
+      //   visible: true,
+      //   zIndex: 9,
+      //   name: 'OSM'
+      // })
       const layer = new TileLayer({
-        source: new OSM(),
-        visible: true,
-        zIndex: 9,
-        name: 'OSM'
+        source: new XYZ({
+          url: 'http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}'
+        })
       })
       this.map = new Map({
         layers: [],
@@ -70,5 +74,4 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

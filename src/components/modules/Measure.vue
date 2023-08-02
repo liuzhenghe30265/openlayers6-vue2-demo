@@ -1,17 +1,10 @@
 <template>
-  <div
-    id="map-container"
-    style="width:100%;height:100%;">
-    <div
-      style="position:absolute;right:50px;top:50px;z-index:999;">
-      <button
-        @click="spaceMeasureFun('Point')">坐标测量</button>
-      <button
-        @click="spaceMeasureFun('LineString')">距离测量</button>
-      <button
-        @click="spaceMeasureFun('Polygon')">面积测量</button>
-      <button
-        @click="removeMeasureFun">清除</button>
+  <div id="map-container" style="width:100%;height:100%;">
+    <div style="position:absolute;right:50px;top:50px;z-index:999;">
+      <button @click="spaceMeasureFun('Point')">坐标测量</button>
+      <button @click="spaceMeasureFun('LineString')">距离测量</button>
+      <button @click="spaceMeasureFun('Polygon')">面积测量</button>
+      <button @click="removeMeasureFun">清除</button>
     </div>
   </div>
 </template>
@@ -20,7 +13,8 @@ import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import OSM from 'ol/source/OSM'
+// import OSM from 'ol/source/OSM'
+import XYZ from 'ol/source/XYZ'
 import { defaults as defaultControls } from 'ol/control'
 import ZoomSlider from 'ol/control/ZoomSlider'
 import OlStyleFill from 'ol/style/Fill'
@@ -37,7 +31,7 @@ import { LineString, Polygon } from 'ol/geom'
 
 export default {
   name: '',
-  data () {
+  data() {
     return {
       // 空间测量
       measureOption: {
@@ -57,14 +51,14 @@ export default {
       map: null
     }
   },
-  mounted () {
+  mounted() {
     this.initMap()
   },
   methods: {
     /**
      * @name: 清除空间测量
      */
-    removeMeasureFun () {
+    removeMeasureFun() {
       this.removeLayerByName('空间测量')
       this.removeAllOverlay()
     },
@@ -72,7 +66,7 @@ export default {
     /**
      * @name: 添加测量标注
      */
-    createMeasureTooltip () {
+    createMeasureTooltip() {
       if (this.measureOption.measureTooltipElement) {
         this.measureOption.measureTooltipElement.parentNode.removeChild(
           this.measureOption.measureTooltipElement
@@ -89,7 +83,7 @@ export default {
       })
       this.map.addOverlay(this.measureOption.measureTooltip)
     },
-    createHelpTooltip () {
+    createHelpTooltip() {
       if (this.measureOption.helpTooltipElement) {
         this.measureOption.helpTooltipElement.parentNode.removeChild(
           this.measureOption.helpTooltipElement
@@ -109,7 +103,7 @@ export default {
      * @name: 测量交互
      * @param {measureType}
      */
-    addInteractionFun (measureType) {
+    addInteractionFun(measureType) {
       this.map.removeInteraction(this.measureOption.draw) // 防止多次点击添加多个图层
       const source = new OlSourceVector()
       // 绘制时的样式
@@ -226,7 +220,7 @@ export default {
      * @name: 格式化距离
      * @param {line}
      */
-    formatLength (line) {
+    formatLength(line) {
       const sourceProj = this.map.getView().getProjection() // 获取投影坐标系
       const length = getLength(line, {
         projection: sourceProj
@@ -244,7 +238,7 @@ export default {
      * @name: 格式化面积
      * @param {polygon}
      */
-    formatArea (polygon) {
+    formatArea(polygon) {
       const sourceProj = this.map.getView().getProjection() // 获取投影坐标系
       const area = getArea(polygon, {
         projection: sourceProj
@@ -263,7 +257,7 @@ export default {
      * @name: 移动点
      * @param {evt}
      */
-    pointerMoveHandler (evt) {
+    pointerMoveHandler(evt) {
       if (evt.dragging) {
         return
       }
@@ -284,7 +278,7 @@ export default {
      * @name: 空间测量
      * @param {measureType} String 测量类型
      */
-    spaceMeasureFun (measureType) {
+    spaceMeasureFun(measureType) {
       this.map.on('pointermove', this.pointerMoveHandler)
       this.map.getViewport().addEventListener('mouseout', () => {
         this.measureOption.helpTooltipElement.classList.add('hidden')
@@ -295,7 +289,7 @@ export default {
     /**
      * @name: 清除所有覆盖图层
      */
-    removeAllOverlay () {
+    removeAllOverlay() {
       const layers = this.getOverlays()
       layers.forEach(item => {
         this.map.removeOverlay(item)
@@ -306,7 +300,7 @@ export default {
      * @name: 清除覆盖图层
      * @param {ID} String 覆盖图层 ID
      */
-    removeOverLay (ID) {
+    removeOverLay(ID) {
       const layer = this.getOverlays(ID)
       this.map.removeOverlay(layer)
     },
@@ -315,7 +309,7 @@ export default {
      * @name: 获取覆盖图层
      * @param {ID} String
      */
-    getOverlays (ID) {
+    getOverlays(ID) {
       if (ID) {
         // 获取指定 ID 的覆盖物图层
         const overlay = this.map.getOverlayById(ID)
@@ -331,7 +325,7 @@ export default {
      * @name: 根据图层名移除图层
      * @param {layername} 图层名称
      */
-    removeLayerByName (layerName) {
+    removeLayerByName(layerName) {
       this.getLayerByName(layerName)
       const layer = this.getLayerByName(layerName)
       layer.forEach(item => {
@@ -343,7 +337,7 @@ export default {
      * @name: 根据图层名获取图层
      * @param {layerName} 图层名称
      */
-    getLayerByName (layerName) {
+    getLayerByName(layerName) {
       const allLayers = this.getAllLayers()
       const layer = allLayers.filter(item => {
         return item.get('name') === layerName
@@ -354,7 +348,7 @@ export default {
     /**
      * @name: 获取所有图层
      */
-    getAllLayers () {
+    getAllLayers() {
       const layers = this.map.getLayers().getArray()
       return layers
     },
@@ -362,7 +356,7 @@ export default {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun () {
+    singleClickFun() {
       this.map.on('singleclick', event => {
         console.log(event)
       })
@@ -371,17 +365,16 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap () {
+    initMap() {
       const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
         zoom: 12
       })
       const layer = new TileLayer({
-        source: new OSM(),
-        visible: true,
-        zIndex: 1,
-        name: 'OSM'
+        source: new XYZ({
+          url: 'http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}'
+        })
       })
       this.map = new Map({
         layers: [],

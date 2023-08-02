@@ -1,19 +1,11 @@
 <template>
-  <div
-    id="map-container"
-    style="width:100%;height:100%;">
-    <div
-      style="position:absolute;right:50px;top:50px;z-index:999;">
-      <button
-        @click="plottingFun('Point')">点</button>
-      <button
-        @click="plottingFun('LineString')">线</button>
-      <button
-        @click="plottingFun('Polygon')">面</button>
-      <button
-        @click="plottingFun('Text')">文字</button>
-      <button
-        @click="removePlotting">清除</button>
+  <div id="map-container" style="width:100%;height:100%;">
+    <div style="position:absolute;right:50px;top:50px;z-index:999;">
+      <button @click="plottingFun('Point')">点</button>
+      <button @click="plottingFun('LineString')">线</button>
+      <button @click="plottingFun('Polygon')">面</button>
+      <button @click="plottingFun('Text')">文字</button>
+      <button @click="removePlotting">清除</button>
     </div>
   </div>
 </template>
@@ -22,7 +14,8 @@ import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import OSM from 'ol/source/OSM'
+// import OSM from 'ol/source/OSM'
+import XYZ from 'ol/source/XYZ'
 import { defaults as defaultControls } from 'ol/control'
 import ZoomSlider from 'ol/control/ZoomSlider'
 import OlStyleFill from 'ol/style/Fill'
@@ -36,7 +29,7 @@ import Draw from 'ol/interaction/Draw'
 
 export default {
   name: '',
-  data () {
+  data() {
     return {
       // 标绘
       plottingOption: {
@@ -49,14 +42,14 @@ export default {
       map: null
     }
   },
-  mounted () {
+  mounted() {
     this.initMap()
   },
   methods: {
     /**
      * @name: 清除标绘
      */
-    removePlotting () {
+    removePlotting() {
       this.removeLayerByName('标绘')
       this.map.removeInteraction(this.plottingOption.draw)
     },
@@ -65,7 +58,7 @@ export default {
      * @name: 添加交互
      * @param {type}
      */
-    addInteractionFun (type) {
+    addInteractionFun(type) {
       console.log(type)
       this.map.removeInteraction(this.plottingOption.draw) // 防止多次点击添加多个图层
       const source = new OlSourceVector()
@@ -199,7 +192,7 @@ export default {
      * @name: 标绘功能
      * @param {type}
      */
-    plottingFun (type) {
+    plottingFun(type) {
       this.addInteractionFun(type)
     },
 
@@ -207,7 +200,7 @@ export default {
      * @name: 清除覆盖图层
      * @param {ID} String 覆盖图层 ID
      */
-    removeOverLay (ID) {
+    removeOverLay(ID) {
       const layer = this.getOverlays(ID)
       this.map.removeOverlay(layer)
     },
@@ -216,7 +209,7 @@ export default {
      * @name: 获取覆盖图层
      * @param {ID} String
      */
-    getOverlays (ID) {
+    getOverlays(ID) {
       if (ID) {
         // 获取指定 ID 的覆盖物图层
         const overlay = this.map.getOverlayById(ID)
@@ -232,7 +225,7 @@ export default {
      * @name: 根据图层名移除图层
      * @param {layername} 图层名称
      */
-    removeLayerByName (layerName) {
+    removeLayerByName(layerName) {
       this.getLayerByName(layerName)
       const layer = this.getLayerByName(layerName)
       layer.forEach(item => {
@@ -244,7 +237,7 @@ export default {
      * @name: 根据图层名获取图层
      * @param {layerName} 图层名称
      */
-    getLayerByName (layerName) {
+    getLayerByName(layerName) {
       const allLayers = this.getAllLayers()
       const layer = allLayers.filter(item => {
         return item.get('name') === layerName
@@ -255,7 +248,7 @@ export default {
     /**
      * @name: 获取所有图层
      */
-    getAllLayers () {
+    getAllLayers() {
       const layers = this.map.getLayers().getArray()
       return layers
     },
@@ -263,7 +256,7 @@ export default {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun () {
+    singleClickFun() {
       this.map.on('singleclick', event => {
         console.log(event)
       })
@@ -272,17 +265,16 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap () {
+    initMap() {
       const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
         zoom: 12
       })
       const layer = new TileLayer({
-        source: new OSM(),
-        visible: true,
-        zIndex: 1,
-        name: 'OSM'
+        source: new XYZ({
+          url: 'http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}'
+        })
       })
       this.map = new Map({
         layers: [],

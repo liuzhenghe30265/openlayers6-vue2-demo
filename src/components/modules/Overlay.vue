@@ -1,26 +1,15 @@
 <template>
-  <div
-    id="map-container"
-    style="width:100%;height:100%;">
+  <div id="map-container" style="width:100%;height:100%;">
     <!-- DOM 元素覆盖图层 -->
-    <div
-      style="display:none">
-      <div
-        ref="positioning"
-        style="width:50px;height:50px;">
-        <img
-          :src="positioningUrl"
-          width="100%"
-          alt="">
+    <div style="display:none">
+      <div ref="positioning" style="width:50px;height:50px;">
+        <img :src="positioningUrl" width="100%" alt="">
       </div>
     </div>
     <!-- DOM 元素覆盖图层 E -->
-    <div
-      style="position:absolute;right:50px;top:50px;z-index:999;">
-      <button
-        @click="addSymbolMarkers(markersData)">添加标注</button>
-      <button
-        @click="clearSymbolMarkers()">清除</button>
+    <div style="position:absolute;right:50px;top:50px;z-index:999;">
+      <button @click="addSymbolMarkers(markersData)">添加标注</button>
+      <button @click="clearSymbolMarkers()">清除</button>
       <div>
         点击已添加的标注，视图中心切换到标注位置，并添加覆盖物图层
       </div>
@@ -34,7 +23,8 @@ import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
 import TileWMS from 'ol/source/TileWMS'
-import OSM from 'ol/source/OSM'
+// import OSM from 'ol/source/OSM'
+import XYZ from 'ol/source/XYZ'
 import { defaults as defaultControls } from 'ol/control'
 import ZoomSlider from 'ol/control/ZoomSlider'
 
@@ -53,7 +43,7 @@ import { easeIn, easeOut } from 'ol/easing'
 
 export default {
   name: '',
-  data () {
+  data() {
     return {
       positioningUrl: require('@/assets/images/positioning.gif'),
       markersData: [
@@ -91,14 +81,14 @@ export default {
       map: null
     }
   },
-  mounted () {
+  mounted() {
     this.initMap()
   },
   methods: {
     /**
      * @name: 清除标注
      */
-    clearSymbolMarkers () {
+    clearSymbolMarkers() {
       this.removeOverLay('定位')
       this.removeLayerByName('矢量标注图层')
     },
@@ -107,7 +97,7 @@ export default {
      * @name: 切换中心点
      * @param {centerPoint} Array 中心点
      */
-    changeCenterPoint (centerPoint) {
+    changeCenterPoint(centerPoint) {
       this.map.getView().animate({
         center: centerPoint,
         duration: 500,
@@ -119,7 +109,7 @@ export default {
      * @name: 清除覆盖图层
      * @param {ID} String 覆盖图层 ID
      */
-    removeOverLay (ID) {
+    removeOverLay(ID) {
       const layer = this.getOverlays(ID)
       this.map.removeOverlay(layer)
     },
@@ -128,7 +118,7 @@ export default {
      * @name: 获取覆盖图层
      * @param {ID} String
      */
-    getOverlays (ID) {
+    getOverlays(ID) {
       if (ID) {
         // 获取指定 ID 的覆盖物图层
         const overlay = this.map.getOverlayById(ID)
@@ -145,7 +135,7 @@ export default {
      * @param {point} Array
      * @param {layerName} String 自定义覆盖图层的 ID，用于清除图层
      */
-    addOverlayFun (point, layerID) {
+    addOverlayFun(point, layerID) {
       const id = layerID || ''
       this.removeOverLay(id)
       const marksDOM = this.$refs.positioning
@@ -164,7 +154,7 @@ export default {
      * @name: 根据图层名移除图层
      * @param {layername} 图层名称
      */
-    removeLayerByName (layerName) {
+    removeLayerByName(layerName) {
       this.getLayerByName(layerName)
       const layer = this.getLayerByName(layerName)
       layer.forEach(item => {
@@ -176,7 +166,7 @@ export default {
      * @name: 根据图层名获取图层
      * @param {layerName} 图层名称
      */
-    getLayerByName (layerName) {
+    getLayerByName(layerName) {
       const allLayers = this.getAllLayers()
       const layer = allLayers.filter(item => {
         return item.get('name') === layerName
@@ -187,7 +177,7 @@ export default {
     /**
      * @name: 获取所有图层
      */
-    getAllLayers () {
+    getAllLayers() {
       const layers = this.map.getLayers().getArray()
       return layers
     },
@@ -197,7 +187,7 @@ export default {
      * @param {text}
      * @param {img}
      */
-    setSymbolStyle (text, img) {
+    setSymbolStyle(text, img) {
       const Styles = []
       Styles.push(
         new OlStyleStyle({
@@ -233,7 +223,7 @@ export default {
      * @name: 添加自定义矢量标注
      * @param {data} Array
      */
-    addSymbolMarkers (data) {
+    addSymbolMarkers(data) {
       let img = ''
       const vectorLayer = new OlLayerVector({
         source: new OlSourceVector(),
@@ -264,7 +254,7 @@ export default {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun () {
+    singleClickFun() {
       this.map.on('singleclick', event => {
         console.log(event)
         const feature = this.map.forEachFeatureAtPixel(
@@ -287,17 +277,16 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap () {
+    initMap() {
       const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
         zoom: 12
       })
       const layer = new TileLayer({
-        source: new OSM(),
-        visible: true,
-        zIndex: 1,
-        name: 'OSM'
+        source: new XYZ({
+          url: 'http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}'
+        })
       })
       this.map = new Map({
         layers: [],

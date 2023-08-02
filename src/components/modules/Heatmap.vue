@@ -1,13 +1,8 @@
 <template>
-  <div
-    id="map-container"
-    style="width:100%;height:100%;">
-    <div
-      style="position:absolute;right:50px;top:50px;z-index:999;">
-      <button
-        @click="addHeatmapFun(heatmapData)">热力图</button>
-      <button
-        @click="removeLayerByName('热力图')">清除</button>
+  <div id="map-container" style="width:100%;height:100%;">
+    <div style="position:absolute;right:50px;top:50px;z-index:999;">
+      <button @click="addHeatmapFun(heatmapData)">热力图</button>
+      <button @click="removeLayerByName('热力图')">清除</button>
     </div>
   </div>
 </template>
@@ -16,7 +11,8 @@ import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import OSM from 'ol/source/OSM'
+// import OSM from 'ol/source/OSM'
+import XYZ from 'ol/source/XYZ'
 import { defaults as defaultControls } from 'ol/control'
 import ZoomSlider from 'ol/control/ZoomSlider'
 import OlSourceVector from 'ol/source/Vector'
@@ -25,7 +21,7 @@ import GeoJSON from 'ol/format/GeoJSON'
 
 export default {
   name: '',
-  data () {
+  data() {
     return {
       // 热力图数据
       heatmapData: {
@@ -61,7 +57,7 @@ export default {
       map: null
     }
   },
-  mounted () {
+  mounted() {
     this.initMap()
     // this.addHeatmapFun(this.heatmapData)
   },
@@ -70,7 +66,7 @@ export default {
      * @name: 热力图
      * @param {data} Object
      */
-    addHeatmapFun (data) {
+    addHeatmapFun(data) {
       const heatMapVector = new OlHeatmapLayer({
         source: new OlSourceVector({
           features: new GeoJSON().readFeatures(data)
@@ -88,7 +84,7 @@ export default {
      * @name: 根据图层名移除图层
      * @param {layername} 图层名称
      */
-    removeLayerByName (layerName) {
+    removeLayerByName(layerName) {
       this.getLayerByName(layerName)
       const layer = this.getLayerByName(layerName)
       layer.forEach(item => {
@@ -100,7 +96,7 @@ export default {
      * @name: 根据图层名获取图层
      * @param {layerName} 图层名称
      */
-    getLayerByName (layerName) {
+    getLayerByName(layerName) {
       const allLayers = this.getAllLayers()
       const layer = allLayers.filter(item => {
         return item.get('name') === layerName
@@ -111,7 +107,7 @@ export default {
     /**
      * @name: 获取所有图层
      */
-    getAllLayers () {
+    getAllLayers() {
       const layers = this.map.getLayers().getArray()
       return layers
     },
@@ -119,7 +115,7 @@ export default {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun () {
+    singleClickFun() {
       this.map.on('singleclick', event => {
         console.log(event)
       })
@@ -128,17 +124,16 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap () {
+    initMap() {
       const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
         zoom: 12
       })
       const layer = new TileLayer({
-        source: new OSM(),
-        visible: true,
-        zIndex: 1,
-        name: 'OSM'
+        source: new XYZ({
+          url: 'http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}'
+        })
       })
       this.map = new Map({
         layers: [],

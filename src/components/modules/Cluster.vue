@@ -1,13 +1,8 @@
 <template>
-  <div
-    id="map-container"
-    style="width:100%;height:100%;">
-    <div
-      style="position:absolute;right:50px;top:50px;z-index:999;">
-      <button
-        @click="addClusterLayer(clusterData)">聚合</button>
-      <button
-        @click="removeLayerByName('聚合图层')">清除</button>
+  <div id="map-container" style="width:100%;height:100%;">
+    <div style="position:absolute;right:50px;top:50px;z-index:999;">
+      <button @click="addClusterLayer(clusterData)">聚合</button>
+      <button @click="removeLayerByName('聚合图层')">清除</button>
     </div>
   </div>
 </template>
@@ -16,7 +11,8 @@ import 'ol/ol.css'
 import Map from 'ol/Map'
 import View from 'ol/View'
 import TileLayer from 'ol/layer/Tile'
-import OSM from 'ol/source/OSM'
+// import OSM from 'ol/source/OSM'
+import XYZ from 'ol/source/XYZ'
 import { defaults as defaultControls } from 'ol/control'
 import ZoomSlider from 'ol/control/ZoomSlider'
 import OlFeature from 'ol/Feature'
@@ -32,7 +28,7 @@ import { Cluster } from 'ol/source'
 
 export default {
   name: '',
-  data () {
+  data() {
     return {
       // 聚合数据
       clusterData: [
@@ -64,14 +60,14 @@ export default {
       map: null
     }
   },
-  mounted () {
+  mounted() {
     this.initMap()
   },
   methods: {
     /**
      * @name: 鼠标悬浮改变聚合图标样式
      */
-    pointerMove () {
+    pointerMove() {
       const _this = this
       _this.map.on('pointermove', evt => {
         _this.map.getTargetElement().style.cursor = _this.map.hasFeatureAtPixel(
@@ -85,7 +81,7 @@ export default {
     /**
      * @name: 设置聚合图标样式
      */
-    setClusterStyle () {
+    setClusterStyle() {
       return feature => {
         const size = feature.get('features').length
         let color = ''
@@ -126,7 +122,7 @@ export default {
      * @param {data} Array 聚合数据
      * @return {type}
      */
-    addClusterLayer (data) {
+    addClusterLayer(data) {
       const _this = this
       const source = new OlSourceVector()
       const clusterSource = new Cluster({
@@ -158,7 +154,7 @@ export default {
      * @name: 根据图层名移除图层
      * @param {layername} 图层名称
      */
-    removeLayerByName (layerName) {
+    removeLayerByName(layerName) {
       this.getLayerByName(layerName)
       const layer = this.getLayerByName(layerName)
       layer.forEach(item => {
@@ -170,7 +166,7 @@ export default {
      * @name: 根据图层名获取图层
      * @param {layerName} 图层名称
      */
-    getLayerByName (layerName) {
+    getLayerByName(layerName) {
       const allLayers = this.getAllLayers()
       const layer = allLayers.filter(item => {
         return item.get('name') === layerName
@@ -181,7 +177,7 @@ export default {
     /**
      * @name: 获取所有图层
      */
-    getAllLayers () {
+    getAllLayers() {
       const layers = this.map.getLayers().getArray()
       return layers
     },
@@ -189,7 +185,7 @@ export default {
     /**
      * @name: 地图单击事件
      */
-    singleClickFun () {
+    singleClickFun() {
       this.map.on('singleclick', event => {
         console.log(event)
       })
@@ -198,17 +194,16 @@ export default {
     /**
      * @name: 初始化地图
      */
-    initMap () {
+    initMap() {
       const view = new View({
         projection: 'EPSG:4326',
         center: [116.395645038, 39.9299857781],
         zoom: 12
       })
       const layer = new TileLayer({
-        source: new OSM(),
-        visible: true,
-        zIndex: 1,
-        name: 'OSM'
+        source: new XYZ({
+          url: 'http://wprd0{1-4}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&style=7&x={x}&y={y}&z={z}'
+        })
       })
       this.map = new Map({
         layers: [],
